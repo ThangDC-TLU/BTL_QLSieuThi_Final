@@ -62,13 +62,26 @@ namespace Quan_li_sieu_thi
 
         }
 
-        private void btnReset_Click(object sender, EventArgs e)
+        void reset()
         {
             txtMaNCC.ResetText();
             txtTenNCC.ResetText();
             txtDiaChi.ResetText();
             txtSDT.ResetText();
+        }
+        private void btnReset_Click(object sender, EventArgs e)
+        {
+            reset();
             load();
+        }
+
+        static bool IsValidPhoneNumber(string phoneNumber)
+        {
+            // Biểu thức chính quy kiểm tra định dạng số điện thoại
+            string pattern = @"^\+?(\d[\d-. ]+)?(\([\d-. ]+\))?[\d-. ]+\d$";
+
+            // Kiểm tra xem chuỗi nhập vào có phù hợp với định dạng không
+            return Regex.IsMatch(phoneNumber, pattern);
         }
 
         private void btnThem_Click(object sender, EventArgs e)
@@ -78,7 +91,7 @@ namespace Quan_li_sieu_thi
             {
                 if (txtMaNCC.Text != "" && txtTenNCC.Text != "" && txtDiaChi.Text != "" && txtSDT.Text != "")
                 {
-                    if (txtSDT.Text.Length == 9 && txtSDT.Text.All(char.IsDigit))
+                    if (IsValidPhoneNumber(txtSDT.Text))
                     {
                         con.Open();
                         string sql = "INSERT INTO NhaCungCap(MaNCC, TenNCC, DiaChi, SDT) VALUES (@MaNCC, @TenNCC, @DiaChi, @SDT)";
@@ -93,6 +106,7 @@ namespace Quan_li_sieu_thi
                         {
                             MessageBox.Show("Thêm Thành Công");
                             load();
+                            reset();
                         }
                         else
                         {
@@ -101,7 +115,7 @@ namespace Quan_li_sieu_thi
                     }
                     else
                     {
-                        MessageBox.Show("Số điện thoại phải có đúng 9 chữ số.");
+                        MessageBox.Show("Số điện thoại không hợp lệ. Vui lòng nhập lại.");
                     }
                 }
                 else
@@ -143,6 +157,7 @@ namespace Quan_li_sieu_thi
                 {
                     MessageBox.Show("Sửa thành công");
                     load();
+                    reset();
                 }
                 else
                 {
@@ -175,7 +190,7 @@ namespace Quan_li_sieu_thi
                 SqlConnection con = new SqlConnection(chuoiketnoi);
                 con.Open();
 
-                // Check if the supplier has any existing products
+                
                 string checkSql = "SELECT COUNT(*) FROM SanPham WHERE MaNCC = @MaNCC";
                 SqlCommand checkCmd = new SqlCommand(checkSql, con);
                 checkCmd.Parameters.AddWithValue("@MaNCC", txtMaNCC.Text);
@@ -200,59 +215,92 @@ namespace Quan_li_sieu_thi
                     cmd.ExecuteNonQuery();
                     MessageBox.Show("Xóa thành công!");
                     load(); 
+                    reset();
                     con.Close();
                 }
 
             }
         }
 
-        private void button6_Click(object sender, EventArgs e)
+      
+
+        private bool isExiting = false;
+        private void exitConfirm()
         {
-            string connectionString = chuoiketnoi;
-            using (SqlConnection con = new SqlConnection(connectionString))
+            if (isExiting)
+                return;
+
+            DialogResult result = MessageBox.Show("Bạn có thực sự muốn thoát không?", "Thông báo",
+                                        MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            // Kiểm tra kết quả của hộp thoại
+            if (result == DialogResult.Yes)
             {
-                try
-                {
-                    con.Open();
-                    string searchValue = txtTimKiem.Text;
-
-                    string sql = "SELECT * FROM NhaCungCap WHERE MaNCC = @MaNCC";
-                    SqlCommand cmd = new SqlCommand(sql, con);
-                    cmd.Parameters.AddWithValue("@MaNCC", searchValue);
-
-                    SqlDataAdapter da = new SqlDataAdapter(cmd);
-                    DataTable dt = new DataTable();
-                    da.Fill(dt);
-
-                    if (dt.Rows.Count > 0)
-                    {
-                        dataGridView1.DataSource = dt;
-                        MessageBox.Show("Tìm kiếm thành công");
-    
-                    }
-                    else
-                    {
-                        MessageBox.Show("Không tìm thấy nhà cung cấp");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Lỗi kết nối: " + ex.Message);
-                }
+                isExiting = true;
+                this.Close();
             }
         }
 
         private void btnThoat_Click(object sender, EventArgs e)
         {
-            DialogResult f = MessageBox.Show("Bạn có thực sự muốn thoát không?", "Thông báo", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-            if( f == DialogResult.Yes)
-            {
-                this.Close();
-                Application.Exit();
-            }    
+            exitConfirm();
         }
 
-   
+        private void Quan_li_nha_cc_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!isExiting)
+            {
+                DialogResult result = MessageBox.Show("Bạn có thực sự muốn thoát không?", "Thông báo",
+                                          MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (result == DialogResult.No)
+                {
+                    e.Cancel = true; // Hủy bỏ việc đóng form
+                }
+                else
+                {
+                    isExiting = true; // Cho phép đóng form nếu người dùng chọn Yes
+                }
+            }
+        }
+
+        private void txtSDT_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtTimKiem_TextChanged(object sender, EventArgs e)
+        {
+            
+            SqlConnection con = new SqlConnection(chuoiketnoi);
+            try
+                {
+                    con.Open();
+                    //Nếu tìm kiếm rỗng thì sẽ load lại dữ liệu
+                    if (txtTimKiem.Text == "")
+                    {
+                        string sql = "SELECT * FROM NhaCungCap";
+                        SqlDataAdapter dt = new SqlDataAdapter(sql, con);
+                        DataTable tb = new DataTable();
+                        dt.Fill(tb);
+                        dataGridView1.DataSource = tb;
+                    }
+
+                    string loc = string.Format("TenNCC LIKE '%{0}%'", txtTimKiem.Text);
+                    //Chuyển đổi thành DataTable để sử dụng thuộc tính RowFilter để lọc
+                    (dataGridView1.DataSource as DataTable).DefaultView.RowFilter = loc;
+
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi kết nối" + ex.Message);
+                }
+                finally
+                {
+                    con.Close();
+                }
+            
+        }
     }
 
 

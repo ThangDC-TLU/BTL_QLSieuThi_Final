@@ -103,7 +103,7 @@
             // txtMaNCC
             // 
             this.txtMaNCC.BackColor = System.Drawing.SystemColors.Window;
-            this.txtMaNCC.ForeColor = System.Drawing.SystemColors.WindowFrame;
+            this.txtMaNCC.ForeColor = System.Drawing.SystemColors.WindowText;
             this.txtMaNCC.Location = new System.Drawing.Point(184, 106);
             this.txtMaNCC.Name = "txtMaNCC";
             this.txtMaNCC.Size = new System.Drawing.Size(320, 30);
@@ -129,6 +129,7 @@
             this.txtSDT.Name = "txtSDT";
             this.txtSDT.Size = new System.Drawing.Size(320, 30);
             this.txtSDT.TabIndex = 12;
+            this.txtSDT.TextChanged += new System.EventHandler(this.txtSDT_TextChanged);
             // 
             // btnThem
             // 
@@ -196,6 +197,7 @@
             this.txtTimKiem.Name = "txtTimKiem";
             this.txtTimKiem.Size = new System.Drawing.Size(251, 30);
             this.txtTimKiem.TabIndex = 18;
+            this.txtTimKiem.TextChanged += new System.EventHandler(this.txtTimKiem_TextChanged);
             // 
             // button6
             // 
@@ -206,7 +208,7 @@
             this.button6.TabIndex = 19;
             this.button6.Text = "Tìm kiếm";
             this.button6.UseVisualStyleBackColor = false;
-            this.button6.Click += new System.EventHandler(this.button6_Click);
+        
             // 
             // dataGridView1
             // 
@@ -214,6 +216,7 @@
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Location = new System.Drawing.Point(25, 367);
             this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowHeadersWidth = 62;
             this.dataGridView1.RowTemplate.Height = 28;
             this.dataGridView1.Size = new System.Drawing.Size(856, 195);
@@ -244,8 +247,12 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "Quan_li_nha_cc";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Quan_li_nha_cc";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Quan_li_nha_cc_FormClosing);
             this.Load += new System.EventHandler(this.Quan_li_nha_cc_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);

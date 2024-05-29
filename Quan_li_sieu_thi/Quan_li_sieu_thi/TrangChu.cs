@@ -69,7 +69,7 @@ namespace Quan_li_sieu_thi
             string message = "Phần mềm Quản lý Siêu thị\n" +
                      "Phiên bản: 1.0.0\n" +
                      "Sinh viên thực hiện:\n" + 
-                     "+Đinh Cao Thắng - 2251162149\n+Vũ Hoàng Anh - 2251162149\n+Nguyễn Vũ Nguyên - 2251162149\n+Nguyễn Thị Vân Anh - 2251162149\n";
+                     "+Đinh Cao Thắng - 2251162149\n+Vũ Hoàng Anh - 2251161947\n+Nguyễn Vũ Nguyên - 2251162092\n+Nguyễn Thị Vân Anh - 2251161943\n";
                     
 
             MessageBox.Show(message, "Thông tin phần mềm", MessageBoxButtons.OK, MessageBoxIcon.Information);

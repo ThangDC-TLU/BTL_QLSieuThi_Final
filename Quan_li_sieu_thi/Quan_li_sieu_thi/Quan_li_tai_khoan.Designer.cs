@@ -274,8 +274,12 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.dataGridView);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "Quan_li_tai_khoan";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Quan_li_tai_khoan";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Quan_li_tai_khoan_FormClosing);
             this.Load += new System.EventHandler(this.Quan_li_tai_khoan_Load);
             this.groupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();

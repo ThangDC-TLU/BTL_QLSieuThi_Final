@@ -135,16 +135,26 @@ namespace Quan_li_sieu_thi
         }
 
 
-        private void btn_thoat_Click(object sender, EventArgs e)
-        {
-            DialogResult result = MessageBox.Show("Bạn có thực sự muốn thoát không?", "Xác nhận thoát",
-                                          MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if(result == DialogResult.Yes)
-            {
-                Functions.Disconnect();
 
+        private bool isExiting = false;
+        private void exitConfirm()
+        {
+            if (isExiting)
+                return;
+
+            DialogResult result = MessageBox.Show("Bạn có thực sự muốn thoát không?", "Thông báo",
+                                        MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            // Kiểm tra kết quả của hộp thoại
+            if (result == DialogResult.Yes)
+            {
+                isExiting = true;
                 this.Close();
             }
+        }
+        private void btn_thoat_Click(object sender, EventArgs e)
+        {
+            exitConfirm();
         }
 
         private void btn_luu_Click(object sender, EventArgs e)
@@ -162,6 +172,8 @@ namespace Quan_li_sieu_thi
                         dtp_ngayban.Value +"'," + txb_TongTien.Text + ")";
                 Functions.RunSQL(sql);
             }
+           
+
             // Lưu thông tin của các mặt hàng
             if (txb_MaSP.Text.Trim().Length == 0)
             {
@@ -347,6 +359,24 @@ namespace Quan_li_sieu_thi
             }
             string filterExpression = string.Format("TenSP LIKE '%{0}%'", txb_searchSP.Text);
             (dgvSanPham.DataSource as DataTable).DefaultView.RowFilter = filterExpression;
+        }
+
+        private void Ban_hang_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!isExiting)
+            {
+                DialogResult result = MessageBox.Show("Bạn có thực sự muốn thoát không?", "Thông báo",
+                                          MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (result == DialogResult.No)
+                {
+                    e.Cancel = true; // Hủy bỏ việc đóng form
+                }
+                else
+                {
+                    isExiting = true; // Cho phép đóng form nếu người dùng chọn Yes
+                }
+            }
         }
     }
 }

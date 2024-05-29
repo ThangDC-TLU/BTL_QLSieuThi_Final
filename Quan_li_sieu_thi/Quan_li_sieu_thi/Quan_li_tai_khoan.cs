@@ -281,9 +281,28 @@ namespace Quan_li_sieu_thi
             Date.Enabled = true;
         }
 
+
+
+        private bool isExiting = false;
+        private void exitConfirm()
+        {
+            if (isExiting)
+                return;
+
+            DialogResult result = MessageBox.Show("Bạn có thực sự muốn thoát không?", "Thông báo",
+                                        MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            // Kiểm tra kết quả của hộp thoại
+            if (result == DialogResult.Yes)
+            {
+                isExiting = true;
+                this.Close();
+            }
+        }
+
         private void button_Exit_Click(object sender, EventArgs e)
         {
-            this.Close();
+            exitConfirm();
         }
 
         private void label2_Click(object sender, EventArgs e)
@@ -304,6 +323,24 @@ namespace Quan_li_sieu_thi
         private void dataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
 
+        }
+
+        private void Quan_li_tai_khoan_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!isExiting)
+            {
+                DialogResult result = MessageBox.Show("Bạn có thực sự muốn thoát không?", "Thông báo",
+                                          MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (result == DialogResult.No)
+                {
+                    e.Cancel = true; // Hủy bỏ việc đóng form
+                }
+                else
+                {
+                    isExiting = true; // Cho phép đóng form nếu người dùng chọn Yes
+                }
+            }
         }
     }
 }

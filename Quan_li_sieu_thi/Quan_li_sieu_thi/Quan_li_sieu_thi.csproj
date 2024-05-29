@@ -74,12 +74,6 @@
     <Compile Include="Login.Designer.cs">
       <DependentUpon>Login.cs</DependentUpon>
     </Compile>
-    <Compile Include="Quan_li_don_hang.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Quan_li_don_hang.Designer.cs">
-      <DependentUpon>Quan_li_don_hang.cs</DependentUpon>
-    </Compile>
     <Compile Include="Quan_li_hoa_don.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -134,11 +128,17 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="Quan_li_don_hang.resx">
-      <DependentUpon>Quan_li_don_hang.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Quan_li_hoa_don.resx">
       <DependentUpon>Quan_li_hoa_don.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Quan_li_nha_cc.resx">
+      <DependentUpon>Quan_li_nha_cc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Quan_li_san_pham.resx">
+      <DependentUpon>Quan_li_san_pham.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Quan_li_tai_khoan.resx">
+      <DependentUpon>Quan_li_tai_khoan.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TrangChu.resx">
       <DependentUpon>TrangChu.cs</DependentUpon>

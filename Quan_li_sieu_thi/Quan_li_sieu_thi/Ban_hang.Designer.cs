@@ -442,7 +442,7 @@
             this.btn_luu.Name = "btn_luu";
             this.btn_luu.Size = new System.Drawing.Size(158, 37);
             this.btn_luu.TabIndex = 1;
-            this.btn_luu.Text = "Lưu hóa đơn";
+            this.btn_luu.Text = "Lưu ";
             this.btn_luu.UseVisualStyleBackColor = true;
             this.btn_luu.Click += new System.EventHandler(this.btn_luu_Click);
             // 
@@ -542,9 +542,12 @@
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "Ban_hang";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Ban_hang";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Ban_hang_FormClosing);
             this.Load += new System.EventHandler(this.Ban_hang_Load);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();

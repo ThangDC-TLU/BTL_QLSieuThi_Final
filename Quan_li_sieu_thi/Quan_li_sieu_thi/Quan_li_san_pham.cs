@@ -53,38 +53,9 @@ namespace Quan_li_sieu_thi
 
         private void MaNCC_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+           
         }
 
-        private void GiaNhap_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void GiaBan_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void SoLuong_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void HSD_ValueChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void DonViTinh_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void ttnguoinhap_TextChanged(object sender, EventArgs e)
-        {
-            
-        }
         public bool KiemTraMaSP(string MaSP)
         {
             SqlConnection con = new SqlConnection(chuoiketnoi);
@@ -122,6 +93,7 @@ namespace Quan_li_sieu_thi
                         {
                             MessageBox.Show("Thêm thành công");
                             load();
+                            reset();
                         }
                         else
                         {
@@ -157,6 +129,7 @@ namespace Quan_li_sieu_thi
                 cmd.ExecuteNonQuery ();
                 MessageBox.Show("Xóa thành công!");
                 load();
+                reset();
                 con.Close();
             }
         }
@@ -174,6 +147,7 @@ namespace Quan_li_sieu_thi
                 {
                     MessageBox.Show("Sửa thành công");
                     load();
+                    reset();
                 }
                 else
                 {
@@ -189,16 +163,30 @@ namespace Quan_li_sieu_thi
 
         }
 
-        private void button4_Click(object sender, EventArgs e)
+
+        private bool isExiting = false;
+        private void exitConfirm()
         {
-            DialogResult dialogResult = MessageBox.Show("Bạn có muốn thoát không?", "Xác nhận thoát", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (dialogResult == DialogResult.Yes)
+            if (isExiting)
+                return;
+
+            DialogResult result = MessageBox.Show("Bạn có thực sự muốn thoát không?", "Thông báo",
+                                        MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            // Kiểm tra kết quả của hộp thoại
+            if (result == DialogResult.Yes)
             {
-                Application.Exit();
+                isExiting = true;
+                this.Close();
             }
         }
 
-        private void ttreset_Click(object sender, EventArgs e)
+        private void button4_Click(object sender, EventArgs e)
+        {
+            exitConfirm();
+        }
+
+        void reset()
         {
             MaSP.ResetText();
             TenSP.ResetText();
@@ -210,10 +198,16 @@ namespace Quan_li_sieu_thi
             DonViTinh.ResetText();
             TimKiem.ResetText();
         }
+        private void ttreset_Click(object sender, EventArgs e)
+        {
+            reset();
+            load();
+        }
         
         private void Quan_li_san_pham_Load(object sender, EventArgs e)
         {
             load();
+            MaNCC_TextChanged(sender, e);
         }
 
         private void tabledata_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -228,35 +222,7 @@ namespace Quan_li_sieu_thi
             DonViTinh.Text = tabledata.CurrentRow.Cells[7].Value.ToString();
         }
 
-        private void tttimkiem_Click(object sender, EventArgs e)
-        {
-            SqlConnection con = new SqlConnection(chuoiketnoi);
-            try
-            {
-                con.Open();
-                string searchValue = MaSP.Text;
-                string sql = "SELECT *FROM SanPham WHERE MaSP = '" + TimKiem.Text + "'";
-                SqlDataAdapter dt = new SqlDataAdapter(sql, con);
-                DataTable tb = new DataTable();
-                dt.Fill(tb);
-
-                if (tb.Rows.Count > 0 )
-                {
-                    tabledata.DataSource = tb;
-                    MessageBox.Show("Tìm kiếm thành công");
-                    load();
-                }
-                else
-                {
-                    MessageBox.Show("Không tìm thấy sản phầm nào");
-                }
-                con.Close();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi kết nối" + ex.Message);
-            }
-        }
+       
 
         private void GiaNhap_KeyPress(object sender, KeyPressEventArgs e)
         {
@@ -294,5 +260,86 @@ namespace Quan_li_sieu_thi
                 e.Handled = true;
             }
         }
+
+        private void Quan_li_san_pham_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!isExiting)
+            {
+                DialogResult result = MessageBox.Show("Bạn có thực sự muốn thoát không?", "Thông báo",
+                                          MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (result == DialogResult.No)
+                {
+                    e.Cancel = true; // Hủy bỏ việc đóng form
+                }
+                else
+                {
+                    isExiting = true; // Cho phép đóng form nếu người dùng chọn Yes
+                }
+            }
+        }
+
+        private void MaNCC_TextChanged(object sender, EventArgs e)
+        {
+            MaNCC.Items.Clear();
+                
+
+            // Mở kết nối đến cơ sở dữ liệu
+            using (SqlConnection con = new SqlConnection(chuoiketnoi))
+            {
+                try
+                {
+                    con.Open();
+                    string sql = "SELECT MaNCC FROM NhaCungCap";
+                    SqlCommand cmd = new SqlCommand(sql, con);
+
+                    // Thực thi truy vấn và đọc dữ liệu
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        // Thêm dữ liệu vào ComboBox
+                        MaNCC.Items.Add(reader["MaNCC"].ToString());
+                    }
+                    reader.Close();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi: " + ex.Message);
+                }
+            }
+        }
+
+        private void TimKiem_TextChanged(object sender, EventArgs e)
+        {
+            SqlConnection con = new SqlConnection(chuoiketnoi);
+            try
+            {
+                con.Open();
+                if (TimKiem.Text == "")
+                {
+                    string sql = "SELECT MaSP, TenSP, MaNCC, GiaNhap, GiaBan, SoLuong, HSD, DonViTinh FROM SanPham";
+                    SqlDataAdapter dt = new SqlDataAdapter(sql, con);
+                    DataTable tb = new DataTable();
+                    dt.Fill(tb);
+                    tabledata.DataSource = tb;
+                }
+
+                string loc = string.Format("TenSP LIKE '%{0}%'", TimKiem.Text);
+                //Chuyển đổi thành DataTable để sử dụng thuộc tính RowFilter để lọc
+                (tabledata.DataSource as DataTable).DefaultView.RowFilter = loc;
+            
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi kết nối" + ex.Message);
+            }
+            finally 
+            { 
+                con.Close(); 
+            }
+        }
+
+
+
     }
 }
